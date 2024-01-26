@@ -4,19 +4,22 @@ import socket
 import time
 import pandas as pd
 
+
+
 def send_data_over_socket(file_path, host='127.0.0.1', port=9999, chunk_size=2):
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.bind((host, port))
     s.listen(1)
     print(f"Listening on port {host}:{port}...")
 
-    connection, address = s.accept()
-    print(f"Connection from {address} has been established!")
+
     
     last_sent_idx = 0
     stream_interval = 5
     while True:
-
+        #Fixed reconnection bug by moving connection establishment to the loop
+        connection, address = s.accept()
+        print(f"Connection from {address} has been established!")
         try:
             with open(file_path, 'r') as f:
                 for _ in range(last_sent_idx):
